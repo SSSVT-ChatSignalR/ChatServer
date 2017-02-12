@@ -7,6 +7,15 @@ namespace ChatServer
 {
     public class User
     {
+        public User(string nick, string password, string name, string surname, int age, string email)
+        {
+            Nick = nick;
+            Password = password;
+            Name = name;
+            Surname = surname;
+            Age = age;
+            Email = email;
+        }
         public int ID { get; set; }
 
         public string Nick { get; set; }
