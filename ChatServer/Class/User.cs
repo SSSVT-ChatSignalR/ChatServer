@@ -16,6 +16,9 @@ namespace ChatServer
             Age = age;
             Email = email;
         }
+        public User()
+        {
+        }
         public int ID { get; set; }
 
         public string Nick { get; set; }

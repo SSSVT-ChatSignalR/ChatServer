@@ -53,5 +53,9 @@ namespace ChatServer
             this._context.Users.Remove(u);
             this._context.SaveChanges();
         }
+        public User LoginUser(string nick, string password)
+        {
+            return FindAll().Where(x => x.Nick == nick && x.Password == password).FirstOrDefault();
+        }
     }
 }

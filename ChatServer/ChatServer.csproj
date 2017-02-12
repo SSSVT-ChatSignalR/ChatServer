@@ -236,6 +236,7 @@
     <Compile Include="Hubs\LoginHub.cs" />
     <Compile Include="Hubs\RegisterHub.cs" />
     <Compile Include="MyContext.cs" />
+    <Compile Include="PasswordCoding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\MessageRepository.cs" />
     <Compile Include="Repositories\RoomRepository.cs" />

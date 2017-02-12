@@ -11,7 +11,8 @@ namespace ChatServer.Hubs
         private UserRepository _userRepository = new UserRepository();
         public bool AddUser(string nick, string password, string name, string surname, int age, string email)
         {
-            User usr = new User(nick, password, name, surname, age, email);
+            string passwordMD5 = PasswordCoding.CalculateMD5Hash(password);
+            User usr = new User(nick, passwordMD5, name, surname, age, email);
             this._userRepository.AddUser(usr);
             return true;
         }

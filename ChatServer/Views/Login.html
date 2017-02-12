@@ -2,15 +2,50 @@
 <html>
 <head>
     <title></title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
 </head>
 <body>
-    <div>
-        Login - Zadejte heslo a palte
-    </div>
+    <input type="text" id="Nick" placeholder="Přezdívka" />
+    <input type="password" id="Password" placeholder="Heslo" />
+    <br />
+    <input type="submit" value="Přihlásit" id="sendmessage" />
+
     <script src="../Scripts/jquery-1.6.4.min.js"></script>
     <script src="../Scripts/jquery.signalR-2.2.1.min.js"></script>
     <script src="../signalr/hubs"></script>
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+        //(function () {
+        $.connection.hub.start()
+        .done(function () {
+            $('#sendmessage').click(function () {
+                //alert("Odkliknuto!!");
+                $.connection.loginHub.server.login($('#Nick').val(), $('#Password').val())
+                    .done($.connection.loginHub.client.login = function (nick, password) { if (nick == true) { alert("Logged!") } else {alert("Špatné heslo/jméno!") } },
+                    
+                    clearInputs()
+                )
+                
+                //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
+
+            })
+        })
+        .fail(function () {
+            alert("Connection login hub error!");
+        });
+        function clearInputs() {
+            $("#Nick").val('');
+            $("#Password").val('');
+        }
+        //})
+    </script>
 </body>
 </html>
+		<!--$.connection.loginHub.server.authentificate({Username: name, Password: pass}).done(function(User){
++			if(typeof User == "undefined"){
++				callback();
++				error("Wrong name or password");
++			}else{
++				callback(true);
++
++			}
++		});-->

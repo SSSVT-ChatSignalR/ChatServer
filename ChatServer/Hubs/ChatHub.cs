@@ -5,9 +5,14 @@ namespace SignalRChat
 {
     public class ChatHub : Hub
     {
+        //Testing class
         public void Send(string name, string message)
         {
             Clients.All.broadcastMessage(name, message);
+        }
+        public void Announce(string message)
+        {
+            Clients.All.Announce(message);
         }
     }
 }

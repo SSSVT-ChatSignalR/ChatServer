@@ -6,7 +6,7 @@
 </head>
 <body>
     <input type="text" id="Nick" placeholder="Přezdívka" />
-    <input type="text" id="Password" placeholder="Heslo" />
+    <input type="password" id="Password" placeholder="Heslo"  />
     <br />
     <input type="text" id="Name" placeholder="Jméno" />
     <input type="text" id="Surname" placeholder="Příjmení" />
@@ -19,22 +19,35 @@
     <script src="../Scripts/jquery.signalR-2.2.1.min.js"></script>
     <script src="../signalr/hubs"></script>
     <script type="text/javascript">
-        $.connection.hub.start()
+        //(function () {
+            $.connection.hub.start()
             .done(function () {
                 $('#sendmessage').click(function () {
                     $.connection.registerHub.server.addUser($('#Nick').val(), $('#Password').val(), $('#Name').val(), $('#Surname').val(), $('#Age').val(), $('#Email').val());
-                })
+                    clearInputs();
+                }); //;?
             })
-            .fail(function () { alert("Connection hub error!") });
+            .fail(function () {
+                alert("Connection register hub error!");
+            });
+            function clearInputs() {
+                $("#Nick").val('');
+                $("#Password").val('');
+                $("#Name").val('');
+                $("#Surname").val('');
+                $("#Age").val('');
+                $("#Email").val('');
+            }
+        //})
         
         //$.connection.hub.start()
         //    .done(function () {
         //        console.log("Work");
-        //        $.connection.loginHub.server.announce("ads");
+        //        $.connection.chatHub.server.announce("ads");
         //    })
 
         //    .fail(function () { alert("Connection hub error!") });
-        //$.connection.loginHub.client.announce = function (message) { alert(message) }
+        //$.connection.chatHub.client.announce = function (message) { alert(message) }
     </script>
 </body>
 </html>
