@@ -40,12 +40,15 @@ namespace ChatServer
 
         }
 
-
         public void DeletedbFriend(int id)
         {
             Friend f = this.FindById(id);
             this._context.Friends.Remove(f);
             this._context.SaveChanges();
+        }
+        public List<Friend> FindByUserID(int id)
+        {
+            return FindAll().Where(x => x.IDUser == id).ToList<Friend>();
         }
     }
 }

@@ -22,5 +22,30 @@ namespace ChatServer.Hubs
             this._friendRepository.AddFriend(frn);
             return true;
         }
+        public List<string> WriteFriends(string userConnectionID)
+        {
+            List<string> friendsListString = new List<string>();
+            User user = this._userRepository.FindByConnectionID(userConnectionID);
+            int idUser = user.ID;
+            List<Friend> friendsListFriends = this._friendRepository.FindByUserID(idUser);
+            foreach (Friend item in friendsListFriends)
+            {
+                User _tempUsr = this._userRepository.FindById(item.IDFriend);
+                friendsListString.Add(_tempUsr.Name);
+            }
+            return friendsListString;
+        }
+        public List<string> WriteAllMembers()// string userConnectionID - Bezpečnost
+        {
+            List<string> membersListString = new List<string>();
+
+            List<Friend> friendsListFriends = this._friendRepository.FindAll();
+            foreach (Friend item in friendsListFriends)
+            {
+                User _tempUsr = this._userRepository.FindById(item.IDFriend);
+                membersListString.Add(_tempUsr.Name);
+            }
+            return membersListString;
+        }
     }
 }

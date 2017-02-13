@@ -58,6 +58,7 @@
                             $('#form').hide();
                             $('#AddFriend').show();
                             clearInputs();
+                            ShowMyFriends(ConnectionID);
                             return true;
                         }
                     }
@@ -72,6 +73,20 @@
                     .done(
                         alert("Uživatel přidán!"),
                         clearInputs()
+                    )
+            }
+            var ShowAllMembers = function (){
+                
+            }
+        //Nefunguje, protože vrací ConnectionID jako null!! - už nevrací, Dodělat!!
+            var ShowMyFriends = function (ConnectionID_inside) {
+                $.connection.contactHub.server.writeFriends(ConnectionID_inside)
+                    .done(
+                    function (listJmen) {
+                        for (var item in listJmen) {
+                            alert(item);
+                        }
+                    }
                     )
             }
             var AlertFunction = function () {
