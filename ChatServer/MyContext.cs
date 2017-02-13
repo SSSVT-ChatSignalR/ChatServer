@@ -13,6 +13,7 @@ namespace ChatServer
         public DbSet<Message> Messages { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<UserRoom> UserRooms { get; set; }
+        public DbSet<Friend> Friends { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

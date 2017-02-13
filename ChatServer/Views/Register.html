@@ -25,7 +25,7 @@
                 $('#sendmessage').click(function () {
                     $.connection.registerHub.server.addUser($('#Nick').val(), $('#Password').val(), $('#Name').val(), $('#Surname').val(), $('#Age').val(), $('#Email').val());
                     clearInputs();
-                }); //;?
+                });
             })
             .fail(function () {
                 alert("Connection register hub error!");

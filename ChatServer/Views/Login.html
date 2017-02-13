@@ -3,49 +3,82 @@
 <head>
     <title></title>
     <meta charset="utf-8" />
+    <style>
+    </style>
 </head>
 <body>
-    <input type="text" id="Nick" placeholder="Přezdívka" />
-    <input type="password" id="Password" placeholder="Heslo" />
-    <br />
-    <input type="submit" value="Přihlásit" id="sendmessage" />
+    <div id="form">
+        <input type="text" id="Nick" placeholder="Přezdívka" />
+        <input type="password" id="Password" placeholder="Heslo" />
+        <br />
+        <input type="button" value="Přihlásit" id="LogtoButton" />
+    </div>
+    <div id="AddFriend">
+        <input type="text" id="Friend_Name" placeholder="Zadejte jméno přítele" />
+        <br />
+        <input type="button" value="Přidat" id="AddButton" /> <!--onclick='AlertFunction'-->
+    </div>
 
     <script src="../Scripts/jquery-1.6.4.min.js"></script>
     <script src="../Scripts/jquery.signalR-2.2.1.min.js"></script>
     <script src="../signalr/hubs"></script>
     <script type="text/javascript">
-        //(function () {
-        $.connection.hub.start()
-        .done(function () {
-            $('#sendmessage').click(function () {
+        window.onload = function () {
+            AddButton.onclick = AddUser;
+        }
+            //(function () {}) WTF?
+            var ConnectionID = null;
+            $('#AddFriend').hide();
+            //$('#AddButton').click(alert("adas"));
+
+            $.connection.hub.start()
+            .done(function () {
+                $('#LogtoButton').click(login)
+            })
+            .fail(function () {
+                alert("Connection login hub error!");
+            });
+            function clearInputs() {
+                $("#Nick").val('');
+                $("#Password").val('');
+                $('#Friend_Name').val('');
+            }
+            var login = function () {
                 //alert("Odkliknuto!!");
                 $.connection.loginHub.server.login($('#Nick').val(), $('#Password').val())
-                    .done($.connection.loginHub.client.login = function (nick, password) { if (nick == true) { alert("Logged!") } else {alert("Špatné heslo/jméno!") } },
-                    
-                    clearInputs()
-                )
-                
-                //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
+                    .done(
+                    function (logged) {
+                        if (logged == null) {
+                            alert("Špatné heslo, nebo jméno!!");
+                            return false;
+                        }
+                        else {
+                            ConnectionID = logged;
+                            alert("Well done," + " ConnectionID: " + logged);
+                            $('#form').hide();
+                            $('#AddFriend').show();
+                            clearInputs();
+                            return true;
+                        }
+                    }
 
-            })
-        })
-        .fail(function () {
-            alert("Connection login hub error!");
-        });
-        function clearInputs() {
-            $("#Nick").val('');
-            $("#Password").val('');
-        }
-        //})
+                )
+                //$.connection.loginHub.server.login($('#Nick').val(), $('#Password').val()).done()
+                //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
+                //for(i ... for(asd of pole)
+            }
+            var AddUser = function () {
+                $.connection.contactHub.server.addFriend(ConnectionID, $('#Friend_Name').val())
+                    .done(
+                        alert("Uživatel přidán!"),
+                        clearInputs()
+                    )
+            }
+            var AlertFunction = function () {
+                alert("Funkuje!")
+            }
+
+
     </script>
 </body>
 </html>
-		<!--$.connection.loginHub.server.authentificate({Username: name, Password: pass}).done(function(User){
-+			if(typeof User == "undefined"){
-+				callback();
-+				error("Wrong name or password");
-+			}else{
-+				callback(true);
-+
-+			}
-+		});-->

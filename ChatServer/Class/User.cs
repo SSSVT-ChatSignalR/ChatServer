@@ -9,12 +9,12 @@ namespace ChatServer
     {
         public User(string nick, string password, string name, string surname, int age, string email)
         {
-            Nick = nick;
-            Password = password;
-            Name = name;
-            Surname = surname;
-            Age = age;
-            Email = email;
+            this.Nick = nick;
+            this.Password = password;
+            this.Name = name;
+            this.Surname = surname;
+            this.Age = age;
+            this.Email = email;
         }
         public User()
         {

@@ -8,16 +8,20 @@ namespace ChatServer.Hubs
 {
     public class LoginHub : Hub
     {
-        private UserRepository _uRepository = new UserRepository();
-        public bool Login(string nick, string password)
+        private UserRepository _userRepository = new UserRepository();
+        public string Login(string nick, string password)
         {
             string passwordMD5 = PasswordCoding.CalculateMD5Hash(password);
             
-            User user = this._uRepository.LoginUser(nick, passwordMD5);
+            User user = this._userRepository.LoginUser(nick, passwordMD5);
             if (user == null)
-                return false;
+                return null;
             else
-                return true;//Clients.All.Login("Přihlášen");
+            {
+                user.ConnectionID = PasswordCoding.RandomString(20);
+                this._userRepository.UpdateUser(user);
+                return user.ConnectionID;//Clients.All.Login("Přihlášen");
+            }//
         }
     }
 }

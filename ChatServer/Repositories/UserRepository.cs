@@ -21,7 +21,15 @@ namespace ChatServer
             return this._context.Users.Find(id);
         }
 
+        public User FindByNick(string nick)
+        {
+            return FindAll().Where(x => x.Nick == nick).FirstOrDefault();
+        }
 
+        public User FindByConnectionID(string connectionID)
+        {
+            return FindAll().Where(x => x.ConnectionID == connectionID).FirstOrDefault();
+        }
         public void AddUser(User u)
         {
             this._context.Users.Add(u);
