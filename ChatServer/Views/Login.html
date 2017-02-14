@@ -13,10 +13,16 @@
         <br />
         <input type="button" value="Přihlásit" id="LogtoButton" />
     </div>
+    <div id="FriendsList">
+        <p>List přátel</p>
+    </div>
     <div id="AddFriend">
         <input type="text" id="Friend_Name" placeholder="Zadejte jméno přítele" />
         <br />
         <input type="button" value="Přidat" id="AddButton" /> <!--onclick='AlertFunction'-->
+    </div>
+    <div id="MemberList">
+        <p>List uživatelů</p>
     </div>
 
     <script src="../Scripts/jquery-1.6.4.min.js"></script>
@@ -26,72 +32,105 @@
         window.onload = function () {
             AddButton.onclick = AddUser;
         }
-            //(function () {}) WTF?
-            var ConnectionID = null;
-            $('#AddFriend').hide();
-            //$('#AddButton').click(alert("adas"));
 
-            $.connection.hub.start()
-            .done(function () {
-                $('#LogtoButton').click(login)
-            })
-            .fail(function () {
-                alert("Connection login hub error!");
-            });
-            function clearInputs() {
-                $("#Nick").val('');
-                $("#Password").val('');
-                $('#Friend_Name').val('');
-            }
-            var login = function () {
-                //alert("Odkliknuto!!");
-                $.connection.loginHub.server.login($('#Nick').val(), $('#Password').val())
-                    .done(
-                    function (logged) {
-                        if (logged == null) {
-                            alert("Špatné heslo, nebo jméno!!");
-                            return false;
-                        }
-                        else {
-                            ConnectionID = logged;
-                            alert("Well done," + " ConnectionID: " + logged);
-                            $('#form').hide();
-                            $('#AddFriend').show();
-                            clearInputs();
-                            ShowMyFriends(ConnectionID);
-                            return true;
-                        }
+
+        //(function () {}) WTF?
+        var ConnectionID = null;
+        $('#AddFriend').hide();
+        $('#FriendsList').hide();
+        $('#MemberList').hide();
+        //$('#AddButton').click(alert("adas"));
+
+        $.connection.hub.start()
+        .done(function () {
+            $('#LogtoButton').click(login)
+        })
+        .fail(function () {
+            alert("Connection login hub error!");
+        });
+        function clearInputs() {
+            $("#Nick").val('');
+            $("#Password").val('');
+            $('#Friend_Name').val('');
+        }
+        var login = function () {
+            //alert("Odkliknuto!!");
+            $.connection.loginHub.server.login($('#Nick').val(), $('#Password').val())
+                .done(
+                function (logged) {
+                    if (logged == null) {
+                        alert("Špatné heslo, nebo jméno!!");
+                        return false;
                     }
+                    else {
+                        ConnectionID = logged;
+                        alert("Well done," + " ConnectionID: " + logged);
+                        ShowAndHideAfterLogin();
+                        clearInputs();
+                        //ShowMyFriends(ConnectionID);
+                        ShowAllMembers();
+                        $.connection.contactHub.server.getFriends(ConnectionID)
+                        return true;
+                    }
+                }
 
+            )
+            //$.connection.loginHub.server.login($('#Nick').val(), $('#Password').val()).done()
+            //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
+            //for(i ... for(asd of pole)
+        }
+        var AddUser = function () {
+            $.connection.contactHub.server.addFriend(ConnectionID, $('#Friend_Name').val())
+                .done(
+                    alert("Uživatel přidán!"),
+                    clearInputs()
                 )
-                //$.connection.loginHub.server.login($('#Nick').val(), $('#Password').val()).done()
-                //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
-                //for(i ... for(asd of pole)
-            }
-            var AddUser = function () {
-                $.connection.contactHub.server.addFriend(ConnectionID, $('#Friend_Name').val())
-                    .done(
-                        alert("Uživatel přidán!"),
-                        clearInputs()
-                    )
-            }
-            var ShowAllMembers = function (){
-                
-            }
-        //Nefunguje, protože vrací ConnectionID jako null!! - už nevrací, Dodělat!!
-            var ShowMyFriends = function (ConnectionID_inside) {
-                $.connection.contactHub.server.writeFriends(ConnectionID_inside)
+        }
+        var divMemberList = document.getElementById('MemberList');
+        var ShowAllMembers = function () {
+            $.connection.contactHub.server.writeAllMembers()
                     .done(
                     function (listJmen) {
                         for (var item in listJmen) {
-                            alert(item);
+                            //$("FriendsList").append('<div>' + listJmen[item] + '</div>');
+                            //alert('<div>' + listJmen[item] + '</div>' + '<br />');
+                            divMemberList.innerHTML = divMemberList.innerHTML + "- " + listJmen[item] + "<br />";
                         }
                     }
                     )
+        }
+        //Nefunguje, protože vrací ConnectionID jako null!! - už nevrací, Dodělat!!
+        //var div = document.getElementById('FriendsList');
+        //var ShowMyFriends = function (ConnectionID_inside) {
+        //    $.connection.contactHub.server.writeFriends(ConnectionID_inside)
+        //        .done(
+        //        function (listJmen) {
+        //            for (var item in listJmen) {
+        //                //$("FriendsList").append('<div>' + listJmen[item] + '</div>');
+        //                //alert('<div>' + listJmen[item] + '</div>' + '<br />');
+        //                div.innerHTML = div.innerHTML + "- " + listJmen[item] + "<br />";
+        //            }
+        //        }
+        //        )
+        //}
+        var ShowAndHideAfterLogin = function () {
+            $('#form').hide();
+            $('#AddFriend').show();
+            $('#FriendsList').show();
+            $('#MemberList').show();
+        }
+        var AlertFunction = function () {
+            alert("Funkuje!")
+        }
+        var divFriendsList = document.getElementById('FriendsList');
+        $.connection.contactHub.client.writeFriends = function (listJmen) {
+            //alert("Ukaž list jmen! Jmeno1: " + listJmen[0]);
+            for (var item in listJmen) {
+                //$("FriendsList").append('<div>' + listJmen[item] + '</div>');
+                //alert('<div>' + listJmen[item] + '</div>' + '<br />');
+                divFriendsList.innerHTML = divFriendsList.innerHTML + "- " + listJmen[item] + "<br />";
             }
-            var AlertFunction = function () {
-                alert("Funkuje!")
-            }
+        }
 
 
     </script>

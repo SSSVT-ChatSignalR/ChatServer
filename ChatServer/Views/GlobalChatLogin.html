@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Global Chat</title>
-    <style type="text/css">
+    <<style type="text/css">
         .container {
             background-color: #99CCFF;
             border: thick solid #808080;
@@ -12,6 +12,11 @@
     </style>
 </head>
 <body>
+    <div id="loginForm">
+        <input type="text" id="displayname" />
+        <input type="password" id="displaypassword" />
+        <input type="button" id="loginButton" value="Login" />
+    </div>
     <div class="container">
         <input type="text" id="message" />
         <input type="button" id="sendmessage" value="Send" />
@@ -28,8 +33,11 @@
     <!--Add script to update the page and send messages.-->
     <script type="text/javascript">
         $(function () {
+            $('.container').hide();
+            var ConnectionID = null;
+            var nickname = null;
             // Declare a proxy to reference the hub.
-            var chat = $.connection.testHub;
+            var chat = $.connection.testHub;;
             // Create a function that the hub can call to broadcast messages.
             chat.client.broadcastMessage = function (name, message) {
                 // Html encode display name and message.
@@ -41,19 +49,44 @@
             };
             // Get the user name and store it to prepend to messages.
             $('#displayname').val(prompt('Enter your name:', ''));
+            //$('#displaypassword').val(prompt('Enter your password:', ''));
             // Set initial focus to message input box.
             $('#message').focus();
             // Start the connection.
             $.connection.hub.start()
                 .done(function () {
-                $('#sendmessage').click(function () {
-                    // Call the Send method on the hub.
-                    chat.server.send($('#displayname').val(), $('#message').val());
-                    // Clear text box and reset focus for next comment.
-                    $('#message').val('').focus();
-                });
+                    $('#loginButton').click(login);
+                    $('#sendmessage').click(function () {
+                        // Call the Send method on the hub.
+                        chat.server.send(nickname, $('#message').val());
+                        // Clear text box and reset focus for next comment.
+                        $('#message').val('').focus();
+                    });
 
-            });
+                });
+            
+            var login = function () {
+                //alert("Odkliknuto!!");
+                $.connection.loginHub.server.login($('#Nick').val(), $('#Password').val())
+                    .done(
+                    function (logged) {
+                        if (logged == null) {
+                            alert("Špatné heslo, nebo jméno!!");
+                            return false;
+                        }
+                        else {
+                            ConnectionID = logged;
+                            nickname = $('#Nick').val();
+                            $('.container').show();
+                            return true;
+                        }
+                    }
+
+                )
+                //$.connection.loginHub.server.login($('#Nick').val(), $('#Password').val()).done()
+                //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
+                //for(i ... for(asd of pole)
+            }
         });
     </script>
 </body>

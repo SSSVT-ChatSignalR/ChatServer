@@ -3,7 +3,7 @@ using System.Web;
 using Microsoft.AspNet.SignalR;
 namespace SignalRChat
 {
-    public class ChatHub : Hub
+    public class TestHub : Hub
     {
         //Testing class
         public void Send(string name, string message)
