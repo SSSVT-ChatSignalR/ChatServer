@@ -227,6 +227,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Class\Friend.cs" />
+    <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Hubs\TestHub.cs" />
     <Compile Include="Class\Message.cs" />
     <Compile Include="Class\Room.cs" />
