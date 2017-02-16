@@ -178,6 +178,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-grid.css" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-grid.min.css" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-reboot.css" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-reboot.min.css" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap.css" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap.min.css" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\js\bootstrap.js" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\js\bootstrap.min.js" />
+    <Content Include="images\ArciChat.png" />
+    <Content Include="Styles\Style.css" />
     <Content Include="Views\GlobalChatLogin.html" />
     <Content Include="Views\Login.html" />
     <Content Include="Views\GlobalChat.html" />
@@ -192,6 +202,12 @@
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-grid.css.map" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-grid.min.css.map" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-reboot.css.map" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap-reboot.min.css.map" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap.css.map" />
+    <Content Include="bootstrap-4.0.0-alpha.6-dist\css\bootstrap.min.css.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

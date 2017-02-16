@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ChatServer.Repositories
+namespace ChatServer
 {
     public class RoomRepository
     {

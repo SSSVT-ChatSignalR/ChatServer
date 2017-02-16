@@ -1,23 +1,36 @@
-﻿<!DOCTYPE html>
+﻿<!--<!DOCTYPE html>-->
 <html>
 <head>
-    <title>SignalR Simple Chat</title>
-    <style type="text/css">
-        .container {
-            background-color: #99CCFF;
-            border: thick solid #808080;
-            padding: 20px;
-            margin: 20px;
-        }
-    </style>
+    <title>Arcichat</title>
+    <link href="../Styles/Style.css" rel="stylesheet" />
+    <script src="../bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+    <link href="../bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-    <a href="http://localhost:61171/Views/GlobalChat.html">Global Chat</a>
-    <br />
-    <a href="http://localhost:61171/Views/Login.html">Private Chat</a>
-    <br />
-    <a href="http://localhost:61171/Views/Register.html">Register User</a>
-    <br />
-    <a href="http://localhost:61171/Views/Login.html">Login User</a>
+    <div class="row">
+        <div class="col-sm-12" id="top">
+        </div>
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-2" id="middle">
+            <div style="text-align:center">
+                <a href="http://localhost:61171/Views/Login.html">Login User</a>
+                <br />
+                <a href="http://localhost:61171/Views/Register.html">Register User</a>
+
+                <hr style="margin: 2px">
+                <a href="http://localhost:61171/Views/GlobalChat.html">Global Chat</a>
+                <!--<a href="http://localhost:61171/Views/Login.html">Global Chat /w login</a>-->
+            </div>
+        </div>
+        <div class="col-md-5">
+        </div>
+    </div>
+    <script src="../Scripts/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript">
+        $('#top').click(function () {
+            window.location.href = "index.html";
+        });
+    </script>
 </body>
 </html>

@@ -50,5 +50,9 @@ namespace ChatServer
         {
             return FindAll().Where(x => x.IDUser == id).ToList<Friend>();
         }
+        public Friend FindByFriendIDAndUserID(int id, int id2)
+        {
+            return FindAll().Where(x => x.IDFriend == id && x.IDUser == id2).FirstOrDefault();
+        }
     }
 }

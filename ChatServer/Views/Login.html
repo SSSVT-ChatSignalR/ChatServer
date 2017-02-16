@@ -1,51 +1,82 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Arci/chat</title>
     <meta charset="utf-8" />
+    <link href="../Styles/Style.css" rel="stylesheet" />
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.0.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.0.min.js"></script>
+    <script src="../bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+    <link href="../bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../signalr/hubs"></script>
     <style>
+        h4{
+            color: #44ae1f;
+            text-decoration: underline;
+        }
+        .msg{
+            font-size:10px;
+        }
     </style>
 </head>
 <body>
-    <div id="form">
-        <input type="text" id="Nick" placeholder="Přezdívka" />
-        <input type="password" id="Password" placeholder="Heslo" />
-        <br />
-        <input type="button" value="Přihlásit" id="LogtoButton" />
-    </div>
-    <div id="FriendsList">
-        <p>List přátel</p>
-    </div>
-    <div id="AddFriend">
-        <input type="text" id="Friend_Name" placeholder="Zadejte jméno přítele" />
-        <br />
-        <input type="button" value="Přidat" id="AddButton" /> <!--onclick='AlertFunction'-->
-    </div>
-    <div id="MemberList">
-        <p>List uživatelů</p>
-    </div>
-    <div id="SelectFriendToChat">
-        <p>Chat</p>
-        <br />
-        <input type="text" id="Friend_Name_Chat" placeholder="Zadejte jméno přítele" />
-        <br />
-        <input type="button" value="Psát" id="Select_Friend" />
-        <br />
-
-    </div>
-    <div id="ChatForm">
-        <a style="color:blue" id="Chat_history">Historie chatu</a>
-        <br />
-        <div id="MessagesForm">
+    <!-- ---  LoginForm --- -->
+    <div class="row" id="LoginForm">
+        <div class="col-sm-12" id="top">
         </div>
-        <input type="text" id="Message" placeholder="Zadejte zprávu" />
-        <br />
-        <input type="button" value="Odeslat zprávu" id="Send_Message" />
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4" id="middle">
+            <div style="text-align:center; margin-top: 2px">
+                <input type="text" id="Nick" placeholder="Přezdívka" class="input-w-borders" />
+                <input type="password" id="Password" placeholder="Heslo" class="input-w-borders" />
+                <br />
+                <input type="button" value="Přihlásit" id="LogtoButton" class="button-w-borders" />
+            </div>
+        </div>
+        <div class="col-md-4">
+        </div>
     </div>
+    <!-- --- AfterLoginForm --- -->
+    <div class="row" id="AfterLoginForm">
+        <div class="col-sm-12" id="top">
+        </div>
+        <div class="col-md-4" style="text-align:left">
+            <div id="FriendsList">
+                <h4>List přátel</h4>
+            </div>
+            <div id="AddFriend">
+                <input type="text" id="Friend_Name" placeholder="Zadejte jméno přítele" />
+                <br />
+                <input type="button" value="Přidat" id="AddButton" /> <!--onclick='AlertFunction'-->
+            </div>
+        </div>
+        <div class="col-md-4" style="text-align:center">
+            <div id="SelectFriendToChat">
+                <h4>Chat</h4>
+                <br />
+                <input type="text" id="Friend_Name_Chat" placeholder="Zadejte jméno přítele" />
+                <br />
+                <input type="button" value="Psát" id="Select_Friend" />
+                <br />
 
-    <script src="../Scripts/jquery-1.6.4.min.js"></script>
-    <script src="../Scripts/jquery.signalR-2.2.1.min.js"></script>
-    <script src="../signalr/hubs"></script>
+            </div>
+            <div id="ChatForm">
+                <a style="color:blue" id="Chat_history">Historie chatu</a>
+                <br id="Chat_history" />
+                <div id="MessagesForm">
+                </div>
+                <input type="text" id="Message" placeholder="Zadejte zprávu" />
+                <br />
+                <input type="button" value="Odeslat zprávu" id="Send_Message" />
+            </div>
+        </div>
+        <div class="col-md-4" style="text-align:right">
+            <div id="MemberList">
+                <h4>List uživatelů</h4>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript">
         window.onload = function () {
             AddButton.onclick = AddUser;
@@ -59,19 +90,24 @@
                 //$("FriendsList").append('<div>' + listJmen[item] + '</div>');
                 //alert('<div>' + listJmen[item] + '</div>' + '<br />');
 
-                divFriendsList.innerHTML = divFriendsList.innerHTML + "- " + listJmen[item] + " - <a id=\"" + item + "\">X</a> " + "<br />";
+                divFriendsList.innerHTML = divFriendsList.innerHTML + "- " + listJmen[item] + "<br />";// + " - <a id=\"" + item + "\">X</a> " + "<br />";
             }
         }
-
+        var divChatList = document.getElementById('MessagesForm');
+        $.connection.chatHub.client.writeMessage = function (message, dateNow) {
+            divChatList.innerHTML = divChatList.innerHTML + "<a class=\"msg\">" + dateNow + "</a> " + ConnectionName + ": " + message + "<br />";// + " - <a id=\"" + item + "\">X</a> " + "<br />";
+        }
         //(function () {}) WTF?
         var ConnectionID = null;
+        var ConnectionName = null;
         var NickChatName = null;
         HideAndShowBeforeLogin();
         //$('#AddButton').click(alert("adas"));
 
         $.connection.hub.start()
         .done(function () {
-            $('#LogtoButton').click(login)
+            $('#LogtoButton').click(login);
+            $('#Send_Message').click(sendMessage);
         })
         .fail(function () {
             alert("Connection login hub error!");
@@ -92,6 +128,7 @@
                         return false;
                     }
                     else {
+                        ConnectionName = $('#Nick').val();
                         ConnectionID = logged;
                         alert("Well done," + " ConnectionID: " + logged);
                         ShowAndHideAfterLogin();
@@ -107,6 +144,12 @@
             //$.connection.loginHub.server.login($('#Nick').val(), $('#Password').val()).done()
             //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
             //for(i ... for(asd of pole)
+        }
+        var sendMessage = function () {
+            
+                $.connection.chatHub.server.sendMessage(ConnectionID, $('#Message').val(), NickChatName);
+                $('#Message').val('').focus();
+            
         }
         var AddUser = function () {
             $.connection.contactHub.server.addFriend(ConnectionID, $('#Friend_Name').val())
@@ -129,20 +172,21 @@
                 )
         }
         var ShowChatForm = function () {
-            $.connection.chatHub.server.checkContact($('#Friend_Name_Chat').val())
+            $.connection.chatHub.server.checkContact($('#Friend_Name_Chat').val(), ConnectionID)
                 .done(
                 function (chceck) {
                     if ($('#Friend_Name_Chat').val() == "") {
                         alert("Zadejte jméno pro chat");
                     }
                     else if (chceck == false) {
-                        alert("Uživatel neexistuje");
+                        alert("Uživatel neexistuje, nebo není ve vašm friendlistu");
                     }
                     else if (chceck == true) {
                         $('#ChatForm').show();
                         $('#SelectFriendToChat').show();
                         NickChatName = $('#Friend_Name_Chat').val();
                         alert("Nyní piš zprávu!!");
+                        $('#MessagesForm').empty();
                     }
                 }
 
@@ -151,6 +195,7 @@
         }
         var ShowChatHistory = function () {
             alert("Historie chatu");
+            $('#Chat_history').hide();
         }
         var SendMessage = function () {
             alert("Odeslaná zpráva");
@@ -176,18 +221,25 @@
             $('#Chat').hide();
             $('#ChatForm').hide();
             $('#SelectFriendToChat').hide();
+
+            $('#AfterLoginForm').hide();
         }
         var ShowAndHideAfterLogin = function () {
-            $('#form').hide();
+            $('#LoginForm').hide();
             $('#AddFriend').show();
             $('#FriendsList').show();
             $('#MemberList').show();
             $('#SelectFriendToChat').show();
+
+            $('#AfterLoginForm').show();
         }
 
         var AlertFunction = function () {
             alert("Funkuje!")
         }
+        $('#top').click(function () {
+            window.location.href = "index.html";
+        });
     </script>
 </body>
 </html>
