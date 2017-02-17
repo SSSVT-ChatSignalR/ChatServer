@@ -11,11 +11,13 @@ namespace ChatServer.Hubs
         private UserRepository _userRepository = new UserRepository();
         private FriendRepository _friendRepository = new FriendRepository();
         private MessageRepository _messageRepository = new MessageRepository();
-        //Doupravit tak, aby šĺo chatovat pouze s přátelama
+        //Doupravit tak, aby šĺo chatovat pouze s přátelama - doděláno
         public bool CheckContact(string nick, string connectionID)
         {
             User userN = this._userRepository.FindByNick(nick);
             User userC = this._userRepository.FindByConnectionID(connectionID);
+            if (userN == null || userC == null)
+                return false;
             Friend frn = this._friendRepository.FindByFriendIDAndUserID(userN.ID, userC.ID);
 
             if (frn != null)
@@ -33,7 +35,11 @@ namespace ChatServer.Hubs
             DateTime dateNow = DateTime.Now;
             Message msg = new Message(dateNow, true, idSender, idReciever, -1, message);
             this._messageRepository.AddMessage(msg);
-            Clients.All.WriteMessage(message, dateNow.ToString("yyyy-dd-MM-hh-mm"));
+            Clients.All.WriteMessage(message, dateNow.ToString("yyyy-dd-MM-hh-mm"), sender.Nick);
+        }
+        public List<Message> GetAllMessages(string ConnectionID)
+        {
+            return this._messageRepository.FindAll();
         }
     }
 }

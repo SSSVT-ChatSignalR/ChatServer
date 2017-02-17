@@ -10,16 +10,19 @@
     <link href="../bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="../signalr/hubs"></script>
     <style>
-        h4{
+        h4 {
             color: #44ae1f;
             text-decoration: underline;
-        }
-        .msg{
-            font-size:10px;
         }
     </style>
 </head>
 <body>
+    <!-- --- InfoMessages --- -->
+    <div class="row">
+        <div class="col-md-12" id="InfoMessage">
+
+        </div>
+    </div>
     <!-- ---  LoginForm --- -->
     <div class="row" id="LoginForm">
         <div class="col-sm-12" id="top">
@@ -39,9 +42,14 @@
     </div>
     <!-- --- AfterLoginForm --- -->
     <div class="row" id="AfterLoginForm">
-        <div class="col-sm-12" id="top">
+
+        <div class="col-sm-12" id="NickChatName" style="text-align:right"></div>
+        <div class="col-sm-12" id="top2">
         </div>
-        <div class="col-md-4" style="text-align:left">
+        <div class="col-md-12">
+            <hr />
+        </div>
+        <div class="col-md-4" id="Text-a-left">
             <div id="FriendsList">
                 <h4>List přátel</h4>
             </div>
@@ -51,7 +59,7 @@
                 <input type="button" value="Přidat" id="AddButton" /> <!--onclick='AlertFunction'-->
             </div>
         </div>
-        <div class="col-md-4" style="text-align:center">
+        <div class="col-md-4" id="Text-a-center">
             <div id="SelectFriendToChat">
                 <h4>Chat</h4>
                 <br />
@@ -71,7 +79,7 @@
                 <input type="button" value="Odeslat zprávu" id="Send_Message" />
             </div>
         </div>
-        <div class="col-md-4" style="text-align:right">
+        <div class="col-md-4" id="Text-a-right">
             <div id="MemberList">
                 <h4>List uživatelů</h4>
             </div>
@@ -93,10 +101,18 @@
                 divFriendsList.innerHTML = divFriendsList.innerHTML + "- " + listJmen[item] + "<br />";// + " - <a id=\"" + item + "\">X</a> " + "<br />";
             }
         }
-        var divChatList = document.getElementById('MessagesForm');
-        $.connection.chatHub.client.writeMessage = function (message, dateNow) {
-            divChatList.innerHTML = divChatList.innerHTML + "<a class=\"msg\">" + dateNow + "</a> " + ConnectionName + ": " + message + "<br />";// + " - <a id=\"" + item + "\">X</a> " + "<br />";
+        $.connection.contactHub.client.writeFriend = function (friend) {
+            if (friend != null) {
+                divFriendsList.innerHTML = divFriendsList.innerHTML + "- " + friend + "<br />";
+            }
+            else
+                ShowInfoMessage("Tento uživatel neexistuje!", "red");
         }
+        var divChatList = document.getElementById('MessagesForm');
+        $.connection.chatHub.client.writeMessage = function (message, dateNow, sender) {
+            divChatList.innerHTML = divChatList.innerHTML + "<a class=\"msg\">" + dateNow + "</a> " + sender + ": " + message + "<br />";// + " - <a id=\"" + item + "\">X</a> " + "<br />";
+        }
+
         //(function () {}) WTF?
         var ConnectionID = null;
         var ConnectionName = null;
@@ -110,7 +126,8 @@
             $('#Send_Message').click(sendMessage);
         })
         .fail(function () {
-            alert("Connection login hub error!");
+            //alert("Connection login hub error!");
+            ShowInfoMessage("Connection login hub error!", "red");
         });
         function clearInputs() {
             $("#Nick").val('');
@@ -124,13 +141,17 @@
                 .done(
                 function (logged) {
                     if (logged == null) {
-                        alert("Špatné heslo, nebo jméno!!");
+                        //alert("Špatné heslo, nebo jméno!!");
+                        ShowInfoMessage("Špatné heslo, nebo jméno!", "red");
                         return false;
                     }
                     else {
                         ConnectionName = $('#Nick').val();
+                        var NickChatNameHTML = document.getElementById('NickChatName');
+                        NickChatNameHTML.innerHTML = "<a style=\"font-size: 10px;\">Přihlášen: </a>" + ConnectionName;
                         ConnectionID = logged;
-                        alert("Well done," + " ConnectionID: " + logged);
+                        //alert("Well done," + " ConnectionID: " + logged);
+                        ShowInfoMessage("Přihlášeno!");
                         ShowAndHideAfterLogin();
                         clearInputs();
                         //ShowMyFriends(ConnectionID);
@@ -145,16 +166,28 @@
             //$.connection.loginHub.client.login = function (nick, password) { alert(nick) }
             //for(i ... for(asd of pole)
         }
+        var ShowInfoMessage = function (message, color) {
+            $('#InfoMessage').empty();
+            if (color == null)
+                color = "green";
+            var divChatList = document.getElementById('InfoMessage');
+            $('#InfoMessage').show(30);
+            divChatList.style.background = color;
+            divChatList.innerHTML = message;
+            $('#InfoMessage').delay(5000).hide(2500);
+        };
         var sendMessage = function () {
-            
-                $.connection.chatHub.server.sendMessage(ConnectionID, $('#Message').val(), NickChatName);
-                $('#Message').val('').focus();
-            
+
+            $.connection.chatHub.server.sendMessage(ConnectionID, $('#Message').val(), NickChatName);
+            ShowInfoMessage("Zpráva odeslána!");
+            $('#Message').val('').focus();
+
         }
         var AddUser = function () {
             $.connection.contactHub.server.addFriend(ConnectionID, $('#Friend_Name').val())
                 .done(
-                    alert("Uživatel přidán!"),
+                    //alert("Uživatel přidán!"),
+                    ShowInfoMessage("Uživatel přidán!"),
                     clearInputs()
                 )
         }
@@ -166,7 +199,7 @@
                     for (var item in listJmen) {
                         //$("FriendsList").append('<div>' + listJmen[item] + '</div>');
                         //alert('<div>' + listJmen[item] + '</div>' + '<br />');
-                        divMemberList.innerHTML = divMemberList.innerHTML + "- " + listJmen[item] + "<br />";
+                        divMemberList.innerHTML = divMemberList.innerHTML + listJmen[item] + " -" + "<br />";
                     }
                 }
                 )
@@ -176,16 +209,19 @@
                 .done(
                 function (chceck) {
                     if ($('#Friend_Name_Chat').val() == "") {
-                        alert("Zadejte jméno pro chat");
+                        //alert("Zadejte jméno pro chat");
+                        ShowInfoMessage("Zadejte jméno pro chat!", "red");
                     }
                     else if (chceck == false) {
                         alert("Uživatel neexistuje, nebo není ve vašm friendlistu");
+                        ShowInfoMessage("Uživatel neexistuje, nebo není ve vašm friendlistu!", "red");
                     }
                     else if (chceck == true) {
                         $('#ChatForm').show();
                         $('#SelectFriendToChat').show();
                         NickChatName = $('#Friend_Name_Chat').val();
-                        alert("Nyní piš zprávu!!");
+                        //alert("Nyní piš zprávu!!");
+                        ShowInfoMessage("Chat s uživatelem " + $('#Friend_Name_Chat').val() + " otevřen");
                         $('#MessagesForm').empty();
                     }
                 }
@@ -194,12 +230,12 @@
 
         }
         var ShowChatHistory = function () {
-            alert("Historie chatu");
+            //alert("Historie chatu");
+            ShowInfoMessage("Historie chatu...", "blue");
             $('#Chat_history').hide();
         }
-        var SendMessage = function () {
-            alert("Odeslaná zpráva");
-        }
+
+
         //Nefunguje, protože vrací ConnectionID jako null!! - už nevrací, Dodělat!!
         //var div = document.getElementById('FriendsList');
         //var ShowMyFriends = function (ConnectionID_inside) {
@@ -236,8 +272,12 @@
 
         var AlertFunction = function () {
             alert("Funkuje!")
+            ShowInfoMessage("Funkuje!", "green");
         }
         $('#top').click(function () {
+            window.location.href = "index.html";
+        });
+        $('#top2').click(function () {
             window.location.href = "index.html";
         });
     </script>

@@ -11,16 +11,21 @@ namespace ChatServer.Hubs
         private FriendRepository _friendRepository = new FriendRepository();
         private UserRepository _userRepository = new UserRepository();
 
-        public bool AddFriend(string userConnectionID, string friend)
+        public void AddFriend(string userConnectionID, string friend)
         {
             User user = this._userRepository.FindByConnectionID(userConnectionID);
             User user_friend = this._userRepository.FindByNick(friend);
-            int idUser = user.ID;
-            int idFriend = user_friend.ID;
+            if (user_friend != null)
+            {
+                int idUser = user.ID;
+                int idFriend = user_friend.ID;
 
-            Friend frn = new Friend(idUser, idFriend);
-            this._friendRepository.AddFriend(frn);
-            return true;
+                Friend frn = new Friend(idUser, idFriend);
+                this._friendRepository.AddFriend(frn);
+            }
+            else
+                friend = null;
+            Clients.All.WriteFriend(friend);
         }
         public void GetFriends(string userConnectionID)
         {
