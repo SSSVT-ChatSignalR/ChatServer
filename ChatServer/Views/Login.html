@@ -78,6 +78,14 @@
                 <br />
                 <input type="button" value="Odeslat zprávu" id="Send_Message" />
             </div>
+            <div id="ChatRoomForm">
+                <h4>Rooms</h4>
+                <br />
+                <input type="text" id="Room_Name_Chat" placeholder="Zadejte jméno roomky" />
+                <br />
+                <input type="button" value="Psát" id="Select_Room" />
+                <br />
+            </div>
         </div>
         <div class="col-md-4" id="Text-a-right">
             <div id="MemberList">
@@ -257,7 +265,7 @@
             $('#Chat').hide();
             $('#ChatForm').hide();
             $('#SelectFriendToChat').hide();
-
+            $('#ChatRoomForm').hide();
             $('#AfterLoginForm').hide();
         }
         var ShowAndHideAfterLogin = function () {
@@ -266,7 +274,7 @@
             $('#FriendsList').show();
             $('#MemberList').show();
             $('#SelectFriendToChat').show();
-
+            $('#ChatRoomForm').show();
             $('#AfterLoginForm').show();
         }
 
